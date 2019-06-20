@@ -26,14 +26,14 @@ start = time.time()
 
 # Hyperparameters
 batch_size = 32
-epochs = 20
+epochs = 50
 #fname1 = 'ocm012_undr2_s1r'
 #fname1 = 'ocm012_s1r'
 #fname2 = '.pkl'
 
 #%%%%%%%%%%%%%%%%%%% Import data %%%%%%%%%%%%%%%%%%%
 #################### S1r1 ####################
-with open('ocm012_undr2_s1r1.pkl', 'rb') as f:
+with open('Raw_det_ocm012_s1r1.pkl', 'rb') as f:
     ocm0_all_s1r1, ocm1_all_s1r1, ocm2_all_s1r1 = pickle.load(f)
 # concatinate Before and After water for each OCM
 ocm0_bef_s1r1 = ocm0_all_s1r1[:,:,0]
@@ -60,7 +60,7 @@ ocm_ba_s1r1[:,:,2] = ocm2_ba_s1r1[:,:]
 print('ocm_s1r1 shape:', ocm_ba_s1r1.shape)
 
 #################### S1r2 ####################
-with open('ocm012_undr2_s1r2.pkl', 'rb') as f:
+with open('Raw_det_ocm012_s1r2.pkl', 'rb') as f:
     ocm0_all_s1r2, ocm1_all_s1r2, ocm2_all_s1r2 = pickle.load(f)
 # concatinate before and after water
 ocm0_bef_s1r2 = ocm0_all_s1r2[:,:,0]
@@ -89,7 +89,7 @@ ocm_ba_s1r2[:,:,2] = ocm2_ba_s1r2[:,:]
 print('ocm_s1r2 shape:', ocm_ba_s1r2.shape)
 
 #################### S2r1 ####################
-with open('ocm012_s2r1.pkl', 'rb') as f:
+with open('Raw_det_ocm012_s2r1.pkl', 'rb') as f:
     ocm0_all_s2r1, ocm1_all_s2r1, ocm2_all_s2r1 = pickle.load(f)
 # concatinate Before and After water for each OCM
 ocm0_bef_s2r1 = ocm0_all_s2r1[:,:,0]
@@ -118,7 +118,7 @@ ocm_ba_s2r1[:,:,2] = ocm2_ba_s2r1[:,:]
 print('ocm_s2r1 shape:', ocm_ba_s2r1.shape)
 
 #################### S2r2 ####################
-with open('ocm012_s2r2.pkl', 'rb') as f:
+with open('Raw_det_ocm012_s2r2.pkl', 'rb') as f:
     ocm0_all_s2r2, ocm1_all_s2r2, ocm2_all_s2r2 = pickle.load(f)
 # concatinate before and after water
 ocm0_bef_s2r2 = ocm0_all_s2r2[:,:,0]
@@ -147,7 +147,7 @@ ocm_ba_s2r2[:,:,2] = ocm2_ba_s2r2[:,:]
 print('ocm_s2r2 shape:', ocm_ba_s2r2.shape)
 
 #################### S3r1 ####################
-with open('ocm012_s3r1.pkl', 'rb') as f:
+with open('Raw_det_ocm012_s3r1.pkl', 'rb') as f:
     ocm0_all_s3r1, ocm1_all_s3r1, ocm2_all_s3r1 = pickle.load(f)
 # concatinate Before and After water for each OCM
 ocm0_bef_s3r1 = ocm0_all_s3r1[:,:,0]
@@ -178,10 +178,10 @@ print('ocm_s3r1 shape:', ocm_ba_s3r1.shape)
 #%%%%%%%%%%%%%%%%%%% Pre Proccesing %%%%%%%%%%%%%%%%%%%
 # Concatenate Training set
 # All subject (except s3r2)
-ocm_ba_all_r1 = np.zeros((ocm_ba_s1r1.shape[0]+ocm_ba_s1r2.shape[0]+ocm_ba_s1r2.shape[0]+ocm_ba_s3r1.shape[0], ocm_ba_s1r1.shape[1], ocm_ba_s1r1.shape[2])) #
-ocm_ba_all_r2 = np.zeros((ocm_ba_s2r2.shape[0], ocm_ba_s1r2.shape[1], ocm_ba_s1r2.shape[2])) #
-ocm_ba_all_r1 = np.concatenate([ocm_ba_s1r1, ocm_ba_s1r2, ocm_ba_s2r1, ocm_ba_s3r1], axis=0) #
-ocm_ba_all_r2 = np.concatenate([ocm_ba_s2r2], axis=0) #
+ocm_ba_all_r1 = np.zeros((ocm_ba_s1r1.shape[0]+ocm_ba_s2r1.shape[0]+ocm_ba_s3r1.shape[0], ocm_ba_s1r1.shape[1], ocm_ba_s1r1.shape[2])) #
+ocm_ba_all_r2 = np.zeros((ocm_ba_s1r2.shape[0]+ocm_ba_s2r2.shape[0], ocm_ba_s1r2.shape[1], ocm_ba_s1r2.shape[2])) #
+ocm_ba_all_r1 = np.concatenate([ocm_ba_s1r1, ocm_ba_s2r1, ocm_ba_s3r1], axis=0) #
+ocm_ba_all_r2 = np.concatenate([ocm_ba_s1r2, ocm_ba_s2r2], axis=0) #
 print('ocm_ba_all_r1 shape:', ocm_ba_all_r1.shape)
 print('ocm_ba_all_r2 shape:', ocm_ba_all_r2.shape)
 
@@ -198,8 +198,8 @@ y_ba_s3r1 = np.zeros(ocm_ba_s3r1.shape[0])
 y_ba_s3r1[ocm0_bef_s3r1.shape[1]:] = 1
 
 # All subject (except s3r2)
-y_ba_all_r1 = np.concatenate([y_ba_s1r1,y_ba_s1r2,y_ba_s2r1,y_ba_s3r1], axis=0) #
-y_ba_all_r2 = np.concatenate([y_ba_s2r2], axis=0) #
+y_ba_all_r1 = np.concatenate([y_ba_s1r1, y_ba_s2r1, y_ba_s3r1], axis=0) #
+y_ba_all_r2 = np.concatenate([y_ba_s1r2, y_ba_s2r2], axis=0) #
 print('y_ba_all_r1 shape:', y_ba_all_r1.shape)
 print('y_ba_all_r2 shape:', y_ba_all_r2.shape)
 
@@ -319,4 +319,5 @@ plt.title('ROC curve')
 plt.legend(loc='best')
 plt.savefig('./ROC.png')
 
-print(time.time() - start())
+
+print((time.time() - start)/60, 'min')
