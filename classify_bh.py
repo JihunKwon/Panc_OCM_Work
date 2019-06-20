@@ -11,11 +11,11 @@ from scipy import signal
 import pickle
 
 import keras
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv1D, MaxPooling1D
 from sklearn.model_selection import train_test_split
-from keras.callbacks import EarlyStopping
+from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.regularizers import l1_l2
 import time
 
@@ -149,7 +149,12 @@ model.compile(loss='binary_crossentropy',
               metrics=['accuracy'])
 
 # simple early stopping
-es = EarlyStopping(monitor='val_acc', patience=5, mode='max', verbose=1)
+#es = EarlyStopping(monitor='val_loss', patience=1, mode='min', verbose=1)
+
+# set callback functions to early stop training and save the best model so far
+callbacks = [EarlyStopping(monitor='val_acc', patience=10, mode='max', verbose=1),
+             ModelCheckpoint(filepath='best_model.h5', monitor='val_acc', save_best_only=True)]
+
 
 X_train = X_train.astype('float32')
 X_test = X_test.astype('float32')
@@ -159,13 +164,19 @@ history = model.fit(X_train, y_train,
                     epochs=epochs,
                     validation_data=(X_test, y_test),
                     shuffle=True,
-                    callbacks=[es])
+                    callbacks=callbacks)
 
-# Score trained model.
+
+# Score trained model with last model.
 scores = model.evaluate(X_test, y_test, verbose=1)
 print('Test loss:', scores[0])
 print('Test accuracy:', scores[1])
 
+# Score trained model with the best model.
+model = load_model('best_model.h5')
+scores = model.evaluate(X_test, y_test, verbose=1)
+print('Test loss best:', scores[0])
+print('Test accuracy best:', scores[1])
 
 # ----------------------------------------------
 # Some plots
