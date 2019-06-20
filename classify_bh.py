@@ -34,7 +34,7 @@ epochs = 200
 #################### S1r1 ####################
 # Raw_det_ocm012_s1r2.pkl
 # ocm012_s1r2.pkl
-with open('./import/Raw_det_ocm012_s1r2.pkl', 'rb') as f:
+with open('./import/Raw_det_ocm012_s2r2.pkl', 'rb') as f:
     ocm0_all, ocm1_all, ocm2_all = pickle.load(f)
 
 print(ocm0_all.shape)  # (350, 10245, 3)
@@ -112,9 +112,9 @@ print('ocm_ba_test shape:', ocm_ba_test.shape)
 
 # Create Answer
 y_ba_train = np.zeros(ocm_ba_train.shape[0])
-y_ba_train[ocm_bef_train.shape[1]:] = 1
+y_ba_train[ocm_bef_train.shape[0]:] = 1
 y_ba_test = np.zeros(ocm_ba_test.shape[0])
-y_ba_test[ocm_bef_test.shape[1]:] = 1
+y_ba_test[ocm_bef_test.shape[0]:] = 1
 print('y_ba_train shape:', y_ba_train.shape)
 print('y_ba_test shape:', y_ba_test.shape)
 
@@ -170,7 +170,7 @@ model.compile(loss='binary_crossentropy',
 #es = EarlyStopping(monitor='val_loss', patience=1, mode='min', verbose=1)
 
 # set callback functions to early stop training and save the best model so far
-callbacks = [EarlyStopping(monitor='val_loss', patience=5, mode='min', verbose=1),
+callbacks = [EarlyStopping(monitor='val_loss', patience=10, mode='min', verbose=1),
              ModelCheckpoint(filepath='best_model.h5', monitor='val_loss', save_best_only=True)]
 
 
