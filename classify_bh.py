@@ -25,54 +25,93 @@ start = time.time()
 
 # Hyperparameters
 batch_size = 32
-epochs = 200
-#fname1 = 'ocm012_undr2_s1r'
-#fname1 = 'ocm012_s1r'
-#fname2 = '.pkl'
+epochs = 1
 
-#%%%%%%%%%%%%%%%%%%% Import data %%%%%%%%%%%%%%%%%%%
-#################### S1r1 ####################
-# Raw_det_ocm012_s1r2.pkl
-# ocm012_s1r2.pkl
-with open('./import/Raw_det_ocm012_s2r2.pkl', 'rb') as f:
+#%%%%%%%%%%%%%%%%
+Sub_run = 's3r2'
+#%%%%%%%%%%%%%%%%
+
+name1 = './import/Raw_det_ocm012_'
+name2 = '.pkl'
+fname = name1 + Sub_run + name2
+# Import data
+with open(fname, 'rb') as f:
     ocm0_all, ocm1_all, ocm2_all = pickle.load(f)
 
-print(ocm0_all.shape)  # (350, 10245, 3)
-bh = ocm0_all.shape[1]//5
-phase = 0  # Before water
-ocm0_bef_train = ocm0_all[:,0:bh,phase]
-ocm1_bef_train = ocm1_all[:,0:bh,phase]
-ocm2_bef_train = ocm2_all[:,0:bh,phase]
-ocm0_bef_test = ocm0_all[:,bh:bh*5,phase]
-ocm1_bef_test = ocm1_all[:,bh:bh*5,phase]
-ocm2_bef_test = ocm2_all[:,bh:bh*5,phase]
+# Most of the case (except s3r2)
+if (Sub_run == 's1r1' or Sub_run == 's1r2' or Sub_run == 's2r1' or Sub_run == 's2r2' or Sub_run == 's3r1'):
 
-phase = 1  # After water
-ocm0_aft_train = ocm0_all[:,0:bh,phase]
-ocm1_aft_train = ocm1_all[:,0:bh,phase]
-ocm2_aft_train = ocm2_all[:,0:bh,phase]
-ocm0_aft_test = ocm0_all[:,bh:bh*5,phase]
-ocm1_aft_test = ocm1_all[:,bh:bh*5,phase]
-ocm2_aft_test = ocm2_all[:,bh:bh*5,phase]
+    print(ocm0_all.shape)  # (350, 10245, 3)
+    bh = ocm0_all.shape[1]//5
+    phase = 0  # Before water
+    ocm0_bef_train = ocm0_all[:,0:bh,phase]
+    ocm1_bef_train = ocm1_all[:,0:bh,phase]
+    ocm2_bef_train = ocm2_all[:,0:bh,phase]
+    ocm0_bef_test = ocm0_all[:,bh:bh*5,phase]
+    ocm1_bef_test = ocm1_all[:,bh:bh*5,phase]
+    ocm2_bef_test = ocm2_all[:,bh:bh*5,phase]
 
-# allocate to one variable
-ocm_bef_train = np.zeros((ocm0_bef_train.shape[0], ocm0_bef_train.shape[1], 3))
-ocm_aft_train = np.zeros((ocm0_aft_train.shape[0], ocm0_aft_train.shape[1], 3))
-ocm_bef_test = np.zeros((ocm0_bef_test.shape[0], ocm0_bef_test.shape[1], 3))
-ocm_aft_test = np.zeros((ocm0_aft_test.shape[0], ocm0_aft_test.shape[1], 3))
+    phase = 1  # After water
+    ocm0_aft_train = ocm0_all[:,0:bh,phase]
+    ocm1_aft_train = ocm1_all[:,0:bh,phase]
+    ocm2_aft_train = ocm2_all[:,0:bh,phase]
+    ocm0_aft_test = ocm0_all[:,bh:bh*5,phase]
+    ocm1_aft_test = ocm1_all[:,bh:bh*5,phase]
+    ocm2_aft_test = ocm2_all[:,bh:bh*5,phase]
 
-ocm_bef_train[:,:,0] = ocm0_bef_train[:,:]
-ocm_bef_train[:,:,1] = ocm1_bef_train[:,:]
-ocm_bef_train[:,:,2] = ocm2_bef_train[:,:]
-ocm_bef_test[:,:,0] = ocm0_bef_test[:,:]
-ocm_bef_test[:,:,1] = ocm1_bef_test[:,:]
-ocm_bef_test[:,:,2] = ocm2_bef_test[:,:]
-ocm_aft_train[:,:,0] = ocm0_aft_train[:,:]
-ocm_aft_train[:,:,1] = ocm1_aft_train[:,:]
-ocm_aft_train[:,:,2] = ocm2_aft_train[:,:]
-ocm_aft_test[:,:,0] = ocm0_aft_test[:,:]
-ocm_aft_test[:,:,1] = ocm1_aft_test[:,:]
-ocm_aft_test[:,:,2] = ocm2_aft_test[:,:]
+    # allocate to one variable
+    ocm_bef_train = np.zeros((ocm0_bef_train.shape[0], ocm0_bef_train.shape[1], 3))
+    ocm_aft_train = np.zeros((ocm0_aft_train.shape[0], ocm0_aft_train.shape[1], 3))
+    ocm_bef_test = np.zeros((ocm0_bef_test.shape[0], ocm0_bef_test.shape[1], 3))
+    ocm_aft_test = np.zeros((ocm0_aft_test.shape[0], ocm0_aft_test.shape[1], 3))
+
+    ocm_bef_train[:,:,0] = ocm0_bef_train[:,:]
+    ocm_bef_train[:,:,1] = ocm1_bef_train[:,:]
+    ocm_bef_train[:,:,2] = ocm2_bef_train[:,:]
+    ocm_bef_test[:,:,0] = ocm0_bef_test[:,:]
+    ocm_bef_test[:,:,1] = ocm1_bef_test[:,:]
+    ocm_bef_test[:,:,2] = ocm2_bef_test[:,:]
+    ocm_aft_train[:,:,0] = ocm0_aft_train[:,:]
+    ocm_aft_train[:,:,1] = ocm1_aft_train[:,:]
+    ocm_aft_train[:,:,2] = ocm2_aft_train[:,:]
+    ocm_aft_test[:,:,0] = ocm0_aft_test[:,:]
+    ocm_aft_test[:,:,1] = ocm1_aft_test[:,:]
+    ocm_aft_test[:,:,2] = ocm2_aft_test[:,:]
+
+# s3r2. OCM0 is not working. Try to classify by using OCM1 and OCM2
+elif (Sub_run == 's3r2'):
+
+    print(ocm0_all.shape)  # (350, 10245, 3)
+    bh = ocm0_all.shape[1]//5
+    phase = 0  # Before water
+    ocm1_bef_train = ocm1_all[:,0:bh,phase]
+    ocm2_bef_train = ocm2_all[:,0:bh,phase]
+    ocm1_bef_test = ocm1_all[:,bh:bh*5,phase]
+    ocm2_bef_test = ocm2_all[:,bh:bh*5,phase]
+
+    phase = 1  # After water
+    ocm1_aft_train = ocm1_all[:,0:bh,phase]
+    ocm2_aft_train = ocm2_all[:,0:bh,phase]
+    ocm1_aft_test = ocm1_all[:,bh:bh*5,phase]
+    ocm2_aft_test = ocm2_all[:,bh:bh*5,phase]
+
+    # allocate to one variable
+    ocm_bef_train = np.zeros((ocm1_bef_train.shape[0], ocm1_bef_train.shape[1], 2))
+    ocm_aft_train = np.zeros((ocm1_aft_train.shape[0], ocm1_aft_train.shape[1], 2))
+    ocm_bef_test = np.zeros((ocm1_bef_test.shape[0], ocm1_bef_test.shape[1], 2))
+    ocm_aft_test = np.zeros((ocm1_aft_test.shape[0], ocm1_aft_test.shape[1], 2))
+
+    ocm_bef_train[:,:,0] = ocm1_bef_train[:,:]
+    ocm_bef_train[:,:,1] = ocm2_bef_train[:,:]
+    ocm_bef_test[:,:,0] = ocm1_bef_test[:,:]
+    ocm_bef_test[:,:,1] = ocm2_bef_test[:,:]
+    ocm_aft_train[:,:,0] = ocm1_aft_train[:,:]
+    ocm_aft_train[:,:,1] = ocm2_aft_train[:,:]
+    ocm_aft_test[:,:,0] = ocm1_aft_test[:,:]
+    ocm_aft_test[:,:,1] = ocm2_aft_test[:,:]
+
+else:
+    print('no such subject and runs!!')
 
 # Transpose
 ocm_bef_train = np.einsum('abc->bac', ocm_bef_train)
@@ -166,13 +205,12 @@ model.compile(loss='binary_crossentropy',
               optimizer=opt,
               metrics=['accuracy'])
 
-# simple early stopping
-#es = EarlyStopping(monitor='val_loss', patience=1, mode='min', verbose=1)
+# Define name of the best model
+model_name = 'best_model_' + Sub_run + '.h5'
 
 # set callback functions to early stop training and save the best model so far
 callbacks = [EarlyStopping(monitor='val_loss', patience=10, mode='min', verbose=1),
-             ModelCheckpoint(filepath='best_model.h5', monitor='val_loss', save_best_only=True)]
-
+             ModelCheckpoint(filepath=model_name, monitor='val_loss', save_best_only=True)]
 
 X_train = X_train.astype('float32')
 X_test = X_test.astype('float32')
@@ -184,14 +222,13 @@ history = model.fit(X_train, y_train,
                     shuffle=True,
                     callbacks=callbacks)
 
-
 # Score trained model with last model.
 scores = model.evaluate(X_test, y_test, verbose=1)
 print('Test loss:', scores[0])
 print('Test accuracy:', scores[1])
 
 # Score trained model with the best model.
-model = load_model('best_model.h5')
+model = load_model(model_name)
 scores = model.evaluate(X_test, y_test, verbose=1)
 print('Test loss best:', scores[0])
 print('Test accuracy best:', scores[1])
@@ -223,7 +260,8 @@ def plot_history_acc(fit):
 
 plot_history_loss(history)
 plot_history_acc(history)
-fig.savefig('./result.png')
+result_name = './result_acc_' + Sub_run + '{:.3f}'.format(scores[1]) + '.png'
+fig.savefig(result_name)
 plt.close()
 
 
@@ -244,7 +282,9 @@ plt.xlabel('False positive rate')
 plt.ylabel('True positive rate')
 plt.title('ROC curve')
 plt.legend(loc='best')
-plt.savefig('./ROC.png')
+ROC_name = './ROC_acc_' + Sub_run + '{:.3f}'.format(scores[1]) + '.png'
+plt.savefig(ROC_name)
+plt.close()
 
 
 print(confusion_matrix(y_test, y_pred_class))
@@ -256,5 +296,18 @@ print('Precision:', precision)
 print('Recall:', recall)
 print('F1Score:', f1)
 
+output = 'output_' + Sub_run + '.txt'
+file = open(output,'w')
+
+file.write('AUC: ' + str(auc_keras) + '\n')
+file.write('Accuracy: ' + str(scores[1]) + '\n')
+file.write('Precision: ' + str(precision) + '\n')
+file.write('Recall: ' + str(recall) + '\n')
+file.write('F1Score: ' + str(f1) + '\n')
+file.close()
+
+save_name = 'ROC_para_' + Sub_run + '.pkl'
+with open(save_name, 'wb') as f:
+    pickle.dump([fpr, tpr, auc_keras], f)
 
 print((time.time() - start)/60, 'min')
